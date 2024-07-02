@@ -16,7 +16,21 @@ display: inline-flex;
 justify-content: space-between;
 align-items: center;
 }
+
 progress{
     color:darkgray;
     accent-color: #fff;
+}
+
+.Songs{
+    width: 320px;
+    height: auto;
+    background-color: #000;
+    border: solid gray;
+}
+.SongDetail{
+    width: 320px;
+    height: auto;
+    background-color: #000;
+    border: solid gray;
 }

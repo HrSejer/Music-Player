@@ -10,9 +10,24 @@
 </head>
 
 <body>
+    <div class="Songs">
+        <h1>Songs:</h1>
+        <p>Song 1</p>
+    </div>
+    <div class="SongDetail">
+        <h1>Now playing:</h1>
+        <p>Sang navn, kunstner</p>
+    </div>
     <button class="btn"><i class='bx bx-skip-previous'></i></button>
     <!--Play/Pause bliver måske lavet til 2 knapper afhængigt af om logikken er til at lave med to funktioner-->
     <button class="btn"><i class='bx bx-play'></i><i class='bx bx-pause'></i> </button>
     <button class="btn"><i class='bx bx-skip-next'></i></button>
+    <div class="volume-slider">
+        <div class="slider">
+            <button class="btn"><i class='bx bx-volume-full'></i></button>  
+            <input type="range" min="0" max="100"value="66">
+            <progress min="0" max="100" value="66"></progress>
+        </div>
+    </div>
     <progress value="32" max="100"></progress>
 </body>
