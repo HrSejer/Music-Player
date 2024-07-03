@@ -5,32 +5,117 @@
 }
 
 body {
-    background: #494d5f;
+    background: #2b2c31;
     color: #fff;
 }
-.btn{
-color: #000;
-font-size: 40px;
-position: relative;
-display: inline-flex;
-justify-content: space-between;
-align-items: center;
+
+.footer{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 20px 10%;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(#2b2c31, #48755f);
 }
 
-progress{
-    color:darkgray;
+.home {
+    justify-content:left;
+    align-items: center;
+    display: flex;
+    position:absolute;
+    margin-left: 550px;
+    margin-top: 100px ;
+}
+
+.btn {
+    color: #000;
+    font-size: 40px;
+    position: relative;
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.SongTime {
+    float: left;
+    color: darkgray;
     accent-color: #fff;
+    margin-left:33% ;
 }
 
-.Songs{
+.Songs {
     width: 320px;
     height: auto;
     background-color: #000;
     border: solid gray;
+    float: right;
 }
-.SongDetail{
-    width: 320px;
+
+.SongDetail {
+    width: auto;
     height: auto;
     background-color: #000;
     border: solid gray;
+    float: left;
+    align-items: center;
+    justify-content: left;
 }
+
+/* STYLE TIL VOLUME SLIDER */
+.volume-slider {
+    padding: 25px;
+    border-radius: 5px 25px 25px 5px;
+    display: flex;
+    align-items: center;
+}
+
+.slider {
+    position: relative;
+    width: 200px;
+    height: 20px;
+    margin-left: 5px;
+}
+
+.slider input {
+    position: absolute;
+    left: -6px;
+    top: 0;
+    width: 212px;
+    height: 20px;
+    -webkit-appearance: none;
+    background-color: transparent;
+    z-index: 99;
+}
+
+.slider input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+    border: 3px solid #000;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.slider progress {
+    width: 200px;
+    height: 20px;
+    -webkit-appearance: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.slider progress::-webkit-progress-bar {
+    background-color: rgb(95, 94, 94);
+}
+
+.slider progress::-webkit-progress-value {
+    background-color: #fff;
+}
+
