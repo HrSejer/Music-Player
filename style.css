@@ -9,7 +9,7 @@ body {
     color: #fff;
 }
 
-.footer{
+.footer {
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -22,12 +22,12 @@ body {
 }
 
 .home {
-    justify-content:left;
+    justify-content: left;
     align-items: center;
     display: flex;
-    position:absolute;
-    margin-left: 550px;
-    margin-top: 100px ;
+    position: absolute;
+    margin-left: 35%;
+    margin-top: 5%;
 }
 
 .btn {
@@ -43,7 +43,7 @@ body {
     float: left;
     color: darkgray;
     accent-color: #fff;
-    margin-left:33% ;
+    margin-left: 33%;
 }
 
 .Songs {
@@ -52,6 +52,8 @@ body {
     background-color: #000;
     border: solid gray;
     float: right;
+    padding-left: 2%;
+    padding-bottom: 1%;
 }
 
 .SongDetail {
@@ -118,4 +120,3 @@ body {
 .slider progress::-webkit-progress-value {
     background-color: #fff;
 }
-

@@ -6,34 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music Player</title>
     <link rel="stylesheet" href="style.css">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
 <body>
-    <div class="SongDetail">
+    <div class="SongDetail" id="SongDetail">
         <h1>Now playing:</h1>
         <p>Sang navn, kunstner</p>
     </div>
-    <div class="Songs">
+    <div class="Songs" id="Songs">
         <h1>Songs:</h1>
-        <p>Song 1</p>
+        <ul>
+            <li>Sang 1</li>
+            <li>Sang 2</li>
+        </ul>
     </div>
     <section class="home">
-        <button class="btn"><i class='bx bx-skip-previous'></i></button>
+        <button class="btn" id="PrevBtn"><img src="Billeder/skip-previous-regular-24.png" id="PrevImg"></button>
         <!--Play/Pause bliver måske lavet til 2 knapper afhængigt af om logikken er til at lave med to funktioner-->
-        <button class="btn"><i class='bx bx-play'></i><i class='bx bx-pause'></i> </button>
-        <button class="btn"><i class='bx bx-skip-next'></i></button>
+        <button class="btn" id="Play/PauseBtn"><img src="Billeder/play-regular-24.png" id="PlayPauseImg"></button>
+        <button class="btn" id="SkipBtn"> <img src="Billeder/skip-next-regular-24.png" id="NextImg"></button>
         <div class="volume-slider">
-            <button class="btn"><i class='bx bx-volume-full'></i></button>  
+            <button class="btn" id="VolBtn"><img src="Billeder/volume-full-regular-24.png" id="VolImg"></button>
             <div class="slider">
-                <input type="range" min="0" max="100"value="100">
+                <input type="range" min="0" max="100" value="100">
                 <progress min="0" max="100" value="100"></progress>
             </div>
         </div>
     </section>
-    <div class="SongTime">
-        <progress value="32" max="100"></progress>
+    <div class="SongTime" id="SongTime">
+        <progress value="0" max="100"></progress>
         <p>0:00</p>
     </div>
     <footer class="footer"></footer>
+    <script src="script.js"></script>
 </body>
