@@ -40,11 +40,12 @@ body {
 }
 
 .SongTime {
-    float: left;
-    color: darkgray;
-    accent-color: #fff;
-    margin-left: 33%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin: 20px 0;
 }
+
 
 .Songs {
     width: 320px;
