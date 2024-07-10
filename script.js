@@ -9,10 +9,17 @@ const songTimeProgress = document.getElementById("SongTimeProg");
 const currentTimeDisplay = document.getElementById("current-time");
 const durationTimeDisplay = document.getElementById("duration-time");
 const audioPlayer = document.getElementById("audio-player")
+const prevBtn = document.getElementById("PrevBtn")
+const SkipBtn = document.getElementById("SkipBtn")
+const songName = document.getElementById("SongName")
+const artistName = document.getElementById("ArtistName")
 
 //Har lavet måden sangene bliver afspillet på om, så at jeg kan have flere sange via en liste.
 const songs = [
-    {title: "When Im Alone", artist: "Post Malone", src: "Sange/Post Malone - When Im Alone (Audio).mp3"}
+    {title: "When Im Alone", artist: "Post Malone", src: "Sange/Post Malone - When Im Alone (Audio).mp3"},
+    {title: "Not Like Us", artist: "Kendrick Lamar", src: "Sange/Not Like Us.mp3"},
+    {title: "Good News", artist: "Mac Miller", src: "Sange/Mac Miller - Good News.mp3"},
+    {title: "Self Care", artist: "Mac Miller", src: "Sange/Mac Miller - Self Care.mp3"}
 ];
 let currentSongIndex = 0;
 
@@ -20,6 +27,8 @@ let currentSongIndex = 0;
 function loadSong(index) {
     const song = songs[index];
     audioPlayer.src = song.src;
+    songName.textContent = song.title;
+    artistName.textContent = song.artist;
 
     audioPlayer.onloadedmetadata = function() {
         songTimeInput.max = audioPlayer.duration;
@@ -92,6 +101,20 @@ function pauseSong() {
     audioPlayer.pause();
 }
 
+//Gå videre til næste sang i listen, hvis man er ved den sidste går den tilbage til starten.
+function skipSong(){
+    currentSongIndex = (currentSongIndex + 1) % songs.length;
+    loadSong(currentSongIndex);
+    playSong();
+}
+
+//Gå tilbage til den forrige sang i listen, hvis man er ved den første går den til den sidste sang i listen.
+function prevSong(){
+    currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+    loadSong(currentSongIndex);
+    playSong();
+}
+
 //Afspil en sang
 PlayPauseBtn.addEventListener("click", function () {
     if (audioPlayer.paused) {
@@ -101,6 +124,10 @@ PlayPauseBtn.addEventListener("click", function () {
         pauseSong();
     }
 })
+
+SkipBtn.addEventListener("click", skipSong);
+
+prevBtn.addEventListener("click", prevSong);
 
 //Sætter progressbar på hvor lang man er i sangen og viser hvor langt man er i sangen via currentTimeDisplay.
 function updateProgressBar() {
@@ -123,3 +150,16 @@ function formatTime(seconds) {
 
 songTimeInput.addEventListener("input", seek);
 audioPlayer.addEventListener("timeupdate", updateProgressBar);
+
+//Sanglisten laver et "li" element for hver sang i listen, og man kan også klikke på en af de "li" for at afspille den sang.
+songs.forEach((song, index) => {
+    const listItem = document.createElement('li');
+    listItem.textContent = `${song.title} - ${song.artist}`;
+    listItem.setAttribute('data-index', index);
+    listItem.addEventListener('click', function() {
+        currentSongIndex = index;
+        loadSong(currentSongIndex);
+        playSong();
+    });
+    document.getElementById("SongList").appendChild(listItem);
+});
