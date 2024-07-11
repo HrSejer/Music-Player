@@ -13,13 +13,14 @@ const prevBtn = document.getElementById("PrevBtn")
 const SkipBtn = document.getElementById("SkipBtn")
 const songName = document.getElementById("SongName")
 const artistName = document.getElementById("ArtistName")
+const addSongForm = document.getElementById("add-song-form");
+const songList = document.getElementById("SongList");
 
 //Har lavet måden sangene bliver afspillet på om, så at jeg kan have flere sange via en liste.
 const songs = [
     {title: "When Im Alone", artist: "Post Malone", src: "Sange/Post Malone - When Im Alone (Audio).mp3"},
     {title: "Not Like Us", artist: "Kendrick Lamar", src: "Sange/Not Like Us.mp3"},
-    {title: "Good News", artist: "Mac Miller", src: "Sange/Mac Miller - Good News.mp3"},
-    {title: "Self Care", artist: "Mac Miller", src: "Sange/Mac Miller - Self Care.mp3"}
+    {title: "Good News", artist: "Mac Miller", src: "Sange/Mac Miller - Good News.mp3"}
 ];
 let currentSongIndex = 0;
 
@@ -141,7 +142,7 @@ function seek(event) {
     songTimeProgress.value = audioPlayer.currentTime;
 }
 
-//Blev nødt til at lave en formattime for uden den bliver 3 minutter og 15 sec displayet som 195.239184
+//Blev nødt til at lave en formattime for uden den bliver der bare displayet sekunder
 function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
     seconds = Math.floor(seconds % 60);
@@ -162,4 +163,35 @@ songs.forEach((song, index) => {
         playSong();
     });
     document.getElementById("SongList").appendChild(listItem);
+});
+
+//Læser sang fil med filereader, opdaterer listen med alle sangene, laver en ny list item, tilføjer den til listen og laver et click event til den.
+addSongForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    const title = document.getElementById('song-title').value;
+    const artist = document.getElementById('artist-name').value;
+    const file = document.getElementById('song-file').files[0];
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const newSong = {
+                title: title,
+                artist: artist,
+                src: e.target.result
+            };
+            songs.push(newSong);
+            const newListItem = document.createElement('li');
+            newListItem.textContent = `${title} - ${artist}`;
+            newListItem.setAttribute('data-index', songs.length - 1);
+            newListItem.addEventListener('click', function() {
+                currentSongIndex = songs.length - 1;
+                loadSong(currentSongIndex);
+                playSong();
+            });
+            songList.appendChild(newListItem);
+        };
+        reader.readAsDataURL(file);
+    }
+    addSongForm.reset();
 });
