@@ -18,9 +18,9 @@ const songList = document.getElementById("SongList");
 
 //Har lavet måden sangene bliver afspillet på om, så at jeg kan have flere sange via en liste.
 const songs = [
-    {title: "When Im Alone", artist: "Post Malone", src: "Sange/Post Malone - When Im Alone (Audio).mp3"},
-    {title: "Not Like Us", artist: "Kendrick Lamar", src: "Sange/Not Like Us.mp3"},
-    {title: "Good News", artist: "Mac Miller", src: "Sange/Mac Miller - Good News.mp3"}
+    { title: "When Im Alone", artist: "Post Malone", src: "Sange/Post Malone - When Im Alone (Audio).mp3" },
+    { title: "Not Like Us", artist: "Kendrick Lamar", src: "Sange/Not Like Us.mp3" },
+    { title: "Good News", artist: "Mac Miller", src: "Sange/Mac Miller - Good News.mp3" }
 ];
 let currentSongIndex = 0;
 
@@ -31,7 +31,7 @@ function loadSong(index) {
     songName.textContent = song.title;
     artistName.textContent = song.artist;
 
-    audioPlayer.onloadedmetadata = function() {
+    audioPlayer.onloadedmetadata = function () {
         songTimeInput.max = audioPlayer.duration;
         songTimeProgress.max = audioPlayer.duration;
         durationTimeDisplay.textContent = formatTime(audioPlayer.duration);
@@ -53,8 +53,8 @@ PlayPauseBtn.addEventListener("click", function () {
 
 //Resetter play/pausebtn til play når sangen er færdig.
 audioPlayer.addEventListener("ended", function () {
-    PlayPauseImg.src = "Billeder/play-regular-24.png"; 
-    PlayImg = true; 
+    PlayPauseImg.src = "Billeder/play-regular-24.png";
+    PlayImg = true;
 });
 
 //Volume progress og slider er parallel med hinanden og skifter billede hvis volume = 0
@@ -103,17 +103,15 @@ function pauseSong() {
 }
 
 //Gå videre til næste sang i listen, hvis man er ved den sidste går den tilbage til starten.
-function skipSong(){
+function skipSong() {
     currentSongIndex = (currentSongIndex + 1) % songs.length;
     loadSong(currentSongIndex);
-    playSong();
 }
 
 //Gå tilbage til den forrige sang i listen, hvis man er ved den første går den til den sidste sang i listen.
-function prevSong(){
+function prevSong() {
     currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
     loadSong(currentSongIndex);
-    playSong();
 }
 
 //Afspil en sang
@@ -154,44 +152,75 @@ audioPlayer.addEventListener("timeupdate", updateProgressBar);
 
 //Sanglisten laver et "li" element for hver sang i listen, og man kan også klikke på en af de "li" for at afspille den sang.
 songs.forEach((song, index) => {
-    const listItem = document.createElement('li');
+    const listItem = document.createElement("li");
+    const buttonRemove = document.createElement('button');
+    buttonRemove.textContent = 'X';
+    buttonRemove.className = 'buttonRemove';
     listItem.textContent = `${song.title} - ${song.artist}`;
     listItem.setAttribute('data-index', index);
-    listItem.addEventListener('click', function() {
+    listItem.addEventListener('click', function () {
         currentSongIndex = index;
         loadSong(currentSongIndex);
-        playSong();
     });
+    buttonRemove.addEventListener('click', function(){
+        listItem.remove();
+        songs.splice(index, 1);
+    })
     document.getElementById("SongList").appendChild(listItem);
+    listItem.appendChild(buttonRemove);
 });
 
 //Læser sang fil med filereader, opdaterer listen med alle sangene, laver en ny list item, tilføjer den til listen og laver et click event til den.
-addSongForm.addEventListener('submit', function(event) {
+addSongForm.addEventListener('submit', function (event) {
     event.preventDefault();
+
     const title = document.getElementById('song-title').value;
     const artist = document.getElementById('artist-name').value;
     const file = document.getElementById('song-file').files[0];
+    const newListItem = document.createElement('li');
+    const buttonRemove = document.createElement('button');
+    buttonRemove.textContent = 'X';
+    buttonRemove.className = 'buttonRemove';
 
     if (file) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             const newSong = {
                 title: title,
                 artist: artist,
                 src: e.target.result
             };
             songs.push(newSong);
-            const newListItem = document.createElement('li');
             newListItem.textContent = `${title} - ${artist}`;
             newListItem.setAttribute('data-index', songs.length - 1);
-            newListItem.addEventListener('click', function() {
-                currentSongIndex = songs.length - 1;
+
+            // Play song when `li` is clicked
+            newListItem.addEventListener('click', function () {
+                currentSongIndex = parseInt(newListItem.getAttribute('data-index'));
                 loadSong(currentSongIndex);
-                playSong();
             });
+
             songList.appendChild(newListItem);
+            newListItem.appendChild(buttonRemove);
         };
         reader.readAsDataURL(file);
     }
+
+    // Event listener for remove button
+    buttonRemove.addEventListener('click', function (event) {
+        event.stopPropagation(); // Prevent triggering the play event on `li` click
+        const songIndex = parseInt(newListItem.getAttribute('data-index'));
+
+        // Remove the list item and the song from the array
+        newListItem.remove();
+        songs.splice(songIndex, 1);
+
+        // Update the data-index for all subsequent `li` elements
+        const allListItems = document.querySelectorAll('#songList li');
+        allListItems.forEach((item, index) => {
+            item.setAttribute('data-index', index);
+        });
+    });
+
     addSongForm.reset();
 });
