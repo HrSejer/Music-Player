@@ -1,28 +1,31 @@
-const PlayPauseBtn = document.getElementById("Play/PauseBtn")
-const PlayPauseImg = document.getElementById("PlayPauseImg")
-const VolBtn = document.getElementById("VolBtn")
-const VolImg = document.getElementById("VolImg")
-const volumeSliderInp = document.getElementById("volume-slider-inp")
-const volumeSliderProg = document.getElementById("volume-slider-prog")
+const PlayPauseBtn = document.getElementById("Play/PauseBtn");
+const PlayPauseImg = document.getElementById("PlayPauseImg");
+const VolBtn = document.getElementById("VolBtn");
+const VolImg = document.getElementById("VolImg");
+const volumeSliderInp = document.getElementById("volume-slider-inp");
+const volumeSliderProg = document.getElementById("volume-slider-prog");
 const songTimeInput = document.getElementById("SongTimeInp");
 const songTimeProgress = document.getElementById("SongTimeProg");
 const currentTimeDisplay = document.getElementById("current-time");
 const durationTimeDisplay = document.getElementById("duration-time");
-const audioPlayer = document.getElementById("audio-player")
-const prevBtn = document.getElementById("PrevBtn")
-const SkipBtn = document.getElementById("SkipBtn")
-const songName = document.getElementById("SongName")
-const artistName = document.getElementById("ArtistName")
+const audioPlayer = document.getElementById("audio-player");
+const prevBtn = document.getElementById("PrevBtn");
+const SkipBtn = document.getElementById("SkipBtn");
+const songName = document.getElementById("SongName");
+const artistName = document.getElementById("ArtistName");
 const addSongForm = document.getElementById("add-song-form");
 const songList = document.getElementById("SongList");
+const songQueue = document.getElementById("SongQueue");
 
 //Har lavet måden sangene bliver afspillet på om, så at jeg kan have flere sange via en liste.
 const songs = [
-    { title: "When Im Alone", artist: "Post Malone", src: "Sange/Post Malone - When Im Alone (Audio).mp3" },
+    { title: "When I'm Alone", artist: "Post Malone", src: "Sange/Post Malone - When Im Alone (Audio).mp3" },
     { title: "Not Like Us", artist: "Kendrick Lamar", src: "Sange/Not Like Us.mp3" },
     { title: "Good News", artist: "Mac Miller", src: "Sange/Mac Miller - Good News.mp3" }
 ];
+
 let currentSongIndex = 0;
+const queue = [];
 
 //Har lavet en loadsong metode som bruges til at loade sange i listen, sætter max value af progressbar og viser hvor lang sangen er.
 function loadSong(index) {
@@ -43,47 +46,44 @@ loadSong(currentSongIndex);
 let PlayImg = true;
 PlayPauseBtn.addEventListener("click", function () {
     if (PlayImg) {
-        PlayPauseImg.src = "Billeder/pause-regular-24.png"
-    }
-    else {
-        PlayPauseImg.src = "Billeder/play-regular-24.png"
+        PlayPauseImg.src = "Billeder/pause-regular-24.png";
+    } else {
+        PlayPauseImg.src = "Billeder/play-regular-24.png";
     }
     PlayImg = !PlayImg;
 });
 
-//Resetter play/pausebtn til play når sangen er færdig.
 audioPlayer.addEventListener("ended", function () {
-    PlayPauseImg.src = "Billeder/play-regular-24.png";
-    PlayImg = true;
+    if (queue.length > 0) {
+        skipSong();
+    } else {
+        PlayPauseImg.src = "Billeder/play-regular-24.png";
+        PlayImg = true;
+    }
 });
 
 //Volume progress og slider er parallel med hinanden og skifter billede hvis volume = 0
 slider = document.querySelector("input");
 slider.oninput = function () {
-    progressBar = document.querySelector("progress")
-    progressBar.value = slider.value
-    if (slider.value && progressBar.value == 0) {
-        VolImg.src = "Billeder/volume-mute-regular-24.png"
+    progressBar = document.querySelector("progress");
+    progressBar.value = slider.value;
+    if (slider.value == 0) {
+        VolImg.src = "Billeder/volume-mute-regular-24.png";
+    } else {
+        VolImg.src = "Billeder/volume-full-regular-24.png";
     }
-    else {
-        VolImg.src = "Billeder/volume-full-regular-24.png"
-    }
-}
+};
 
 //Skift billede for lyd og mute, og mute/unmute hvis klikket
 let VolFullImg = true;
 VolBtn.addEventListener("click", function () {
     if (VolFullImg) {
-        VolImg.src = "Billeder/volume-mute-regular-24.png"
+        VolImg.src = "Billeder/volume-mute-regular-24.png";
         slider.value = 0;
-        progressBar = document.querySelector("progress")
-        progressBar.value = slider.value;
         audioPlayer.volume = 0;
-    }
-    else {
-        VolImg.src = "Billeder/volume-full-regular-24.png"
+    } else {
+        VolImg.src = "Billeder/volume-full-regular-24.png";
         slider.value = 1;
-        progressBar.value = slider.value;
         audioPlayer.volume = 1;
     }
     VolFullImg = !VolFullImg;
@@ -92,7 +92,7 @@ VolBtn.addEventListener("click", function () {
 //Ændre volume via slider og knap
 volumeSliderInp.addEventListener("input", function () {
     audioPlayer.volume = volumeSliderInp.value;
-})
+});
 
 function playSong() {
     audioPlayer.play();
@@ -104,28 +104,34 @@ function pauseSong() {
 
 //Gå videre til næste sang i listen, hvis man er ved den sidste går den tilbage til starten.
 function skipSong() {
-    currentSongIndex = (currentSongIndex + 1) % songs.length;
-    loadSong(currentSongIndex);
+    if (queue.length > 0) {
+        const songFromQueue = queue.shift();
+        loadSong(parseInt(songFromQueue.getAttribute('data-index')));
+        loadQueueUI();
+    } else {
+        currentSongIndex = (currentSongIndex + 1) % songs.length;
+        loadSong(currentSongIndex);
+    }
+    PlayPauseImg.src = "Billeder/play-regular-24.png";
 }
 
 //Gå tilbage til den forrige sang i listen, hvis man er ved den første går den til den sidste sang i listen.
 function prevSong() {
     currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
     loadSong(currentSongIndex);
+    PlayPauseImg.src = "Billeder/play-regular-24.png";
 }
 
 //Afspil en sang
 PlayPauseBtn.addEventListener("click", function () {
     if (audioPlayer.paused) {
         playSong();
-    }
-    else {
+    } else {
         pauseSong();
     }
-})
+});
 
 SkipBtn.addEventListener("click", skipSong);
-
 prevBtn.addEventListener("click", prevSong);
 
 //Sætter progressbar på hvor lang man er i sangen og viser hvor langt man er i sangen via currentTimeDisplay.
@@ -134,7 +140,7 @@ function updateProgressBar() {
     songTimeProgress.value = audioPlayer.currentTime;
     currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
 }
-//Seek funktionen bliver brugt til at gøre progressbaren parallel med sangen der afspilles.
+
 function seek(event) {
     audioPlayer.currentTime = event.target.value;
     songTimeProgress.value = audioPlayer.currentTime;
@@ -156,17 +162,33 @@ songs.forEach((song, index) => {
     const buttonRemove = document.createElement('button');
     buttonRemove.textContent = 'X';
     buttonRemove.className = 'buttonRemove';
+
+    const buttonQueue = document.createElement('button');
+    buttonQueue.textContent = '+';
+    buttonQueue.className = 'buttonQueue';
+
     listItem.textContent = `${song.title} - ${song.artist}`;
     listItem.setAttribute('data-index', index);
+
     listItem.addEventListener('click', function () {
         currentSongIndex = index;
         loadSong(currentSongIndex);
+        PlayPauseImg.src = "Billeder/play-regular-24.png";
     });
-    buttonRemove.addEventListener('click', function(){
+
+    buttonRemove.addEventListener('click', function () {
         listItem.remove();
         songs.splice(index, 1);
-    })
-    document.getElementById("SongList").appendChild(listItem);
+    });
+
+    buttonQueue.addEventListener('click', function (event) {
+        event.stopPropagation();
+        queue.push(listItem);
+        loadQueueUI();
+    });
+
+    songList.appendChild(listItem);
+    listItem.appendChild(buttonQueue);
     listItem.appendChild(buttonRemove);
 });
 
@@ -178,9 +200,14 @@ addSongForm.addEventListener('submit', function (event) {
     const artist = document.getElementById('artist-name').value;
     const file = document.getElementById('song-file').files[0];
     const newListItem = document.createElement('li');
+
     const buttonRemove = document.createElement('button');
     buttonRemove.textContent = 'X';
     buttonRemove.className = 'buttonRemove';
+
+    const buttonQueue = document.createElement('button');
+    buttonQueue.textContent = '+';
+    buttonQueue.className = 'buttonQueue';
 
     if (file) {
         const reader = new FileReader();
@@ -194,13 +221,14 @@ addSongForm.addEventListener('submit', function (event) {
             newListItem.textContent = `${title} - ${artist}`;
             newListItem.setAttribute('data-index', songs.length - 1);
 
-            // Play song when `li` is clicked
             newListItem.addEventListener('click', function () {
                 currentSongIndex = parseInt(newListItem.getAttribute('data-index'));
                 loadSong(currentSongIndex);
+                PlayPauseImg.src = "Billeder/play-regular-24.png";
             });
 
             songList.appendChild(newListItem);
+            newListItem.appendChild(buttonQueue);
             newListItem.appendChild(buttonRemove);
         };
         reader.readAsDataURL(file);
@@ -208,19 +236,39 @@ addSongForm.addEventListener('submit', function (event) {
 
     // Event listener for remove button
     buttonRemove.addEventListener('click', function (event) {
-        event.stopPropagation(); // Prevent triggering the play event on `li` click
-        const songIndex = parseInt(newListItem.getAttribute('data-index'));
-
-        // Remove the list item and the song from the array
+        event.stopPropagation();
         newListItem.remove();
+        const songIndex = parseInt(newListItem.getAttribute('data-index'));
         songs.splice(songIndex, 1);
 
-        // Update the data-index for all subsequent `li` elements
         const allListItems = document.querySelectorAll('#songList li');
         allListItems.forEach((item, index) => {
             item.setAttribute('data-index', index);
         });
     });
 
+    buttonQueue.addEventListener('click', function (event) {
+        event.stopPropagation();
+        queue.push(newListItem);
+        loadQueueUI();
+    });
     addSongForm.reset();
 });
+
+function loadQueueUI() {
+    songQueue.innerHTML = '';
+    queue.forEach((songqueue, index) => {
+        const queueItem = document.createElement('li');
+        queueItem.textContent = songqueue.textContent;
+        queueItem.setAttribute('data-index', songqueue.getAttribute('data-index'));
+
+        const buttonRemove = document.createElement('button');
+        buttonRemove.textContent = 'X';
+        buttonRemove.addEventListener('click', function () {
+            queue.splice(index, 1);
+            loadQueueUI();
+        });
+        queueItem.appendChild(buttonRemove);
+        songQueue.appendChild(queueItem);
+    });
+}

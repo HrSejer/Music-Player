@@ -46,11 +46,17 @@
             <input type="text" id="song-title" required>
             <label for="artist-name">Artist Name:</label>
             <input type="text" id="artist-name" required>
-            <label for="song-file">Song File:</label>
+            <label for="song-file">Song File(MP3):</label>
             <input type="file" id="song-file" accept="audio/*" required>
             <button type="submit">Add Song</button>
         </form>
     </div>
+    
+    <div class="SongQueue">
+        <h1>Queue:</h1>
+        <ul id="SongQueue"></ul>
+    </div>
+
     <audio id="audio-player" src=""></audio>
     <footer class="footer"></footer>
     <script src="script.js"></script>
