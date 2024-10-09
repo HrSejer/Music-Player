@@ -268,6 +268,36 @@ function loadQueueUI() {
             queue.splice(index, 1);
             loadQueueUI();
         });
+
+        function moveArrayElement(arr, from, to) {
+            if (to >= arr.length || to < 0) return;
+            arr.splice(to, 0, arr.splice(from, 1)[0]); 
+        }
+
+        function moveUp(index) {
+            moveArrayElement(queue, index, index - 1); 
+            loadQueueUI(); 
+        }
+
+        function moveDown(index) {
+            moveArrayElement(queue, index, index + 1); 
+            loadQueueUI(); 
+        }
+
+        const upBtn = document.createElement('button');
+        upBtn.textContent = '↑';
+        upBtn.addEventListener('click', function () {
+            moveUp(index); 
+        });
+
+        const downBtn = document.createElement('button');
+        downBtn.textContent = '↓';
+        downBtn.addEventListener('click', function () {
+            moveDown(index); 
+        });
+
+        queueItem.appendChild(upBtn);
+        queueItem.appendChild(downBtn);
         queueItem.appendChild(buttonRemove);
         songQueue.appendChild(queueItem);
     });
